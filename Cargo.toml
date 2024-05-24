@@ -1,0 +1,29 @@
+[package]
+name = "BoyKisserUncentral"
+description = "No no no"
+author = "Sympact"
+version = "0.1.0"
+edition = "2021"
+
+[profile.release]
+opt-level = "z"   
+lto = true        
+codegen-units = 1 #
+panic = "abort"  
+strip = true     
+
+build = "build.rs"
+
+[dependencies]
+crossterm = "0.27.0"
+reqwest = { version = "0.12.4", features = ["blocking"] }
+sha2 = "0.10"
+console = "0.15"
+injrs = "0.1.2"
+winres = "0.1"
+log = "0.4"
+simplelog = "0.12.2"
+
+
+[build-dependencies]
+winres = "0.1"
