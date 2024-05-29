@@ -1,22 +1,24 @@
 mod download;
 mod process;
 mod util;
+mod login;
+
 use log::LevelFilter;
 use simplelog::{Config, SimpleLogger};
 use console::Term;
 use download::Downloader;
 use process::ProcessHandler;
 use util::clear_console;
+use dotenv::dotenv;
 
-fn main() {
+#[tokio::main]
+async fn main() -> std::io::Result<()> {
+    dotenv().ok();
+
     let term = Term::stdout();
     let title = "Boykisser Uncentral";
     term.set_title(title);
     SimpleLogger::init(LevelFilter::Info, Config::default()).unwrap();
-
-    let name = "Pixel Gun 3D.exe";
-    let dll_path = "bin/PixelGunCheat.dll";
-    let infinite = true;
 
     println!("Welcome to BoyKisser Uncentral!");
     println!("https://github.com/BKUC-Development");
@@ -28,6 +30,13 @@ fn main() {
     println!("Press ENTER to continue.");
     std::io::stdin().read_line(&mut String::new()).unwrap();
     clear_console(0);
+
+    // Perform SSO login
+    login::login().await?;
+
+    let name = "Pixel Gun 3D.exe";
+    let dll_path = "bin/PixelGunCheat.dll";
+    let infinite = true;
 
     let downloader = Downloader::new("https://cdn.aero.nu/PixelGunCheat.dll", dll_path);
     downloader.download_and_update();
@@ -44,4 +53,6 @@ fn main() {
 
     println!("Press ENTER to exit.");
     std::io::stdin().read_line(&mut String::new()).unwrap();
+
+    Ok(())
 }
